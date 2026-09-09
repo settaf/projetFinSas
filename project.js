@@ -19,8 +19,7 @@ function afficher(tab){
 }
 
 //acheter
-let id ;
-function Acheter(tab){
+function Acheter(tab,tickets){
     let name=prompt("entrer ton nom :");
     let id=+prompt("entrer l identifiant de trajet :");
     let n=0;
@@ -29,18 +28,48 @@ function Acheter(tab){
         
     }
     if(n>0){
-        if(tab[n].availableSeats>0){
-            let ticket={
-                id :1,
-                passengerName :name ,
-                tripId : tab[n].id,
-                seatNumber: 12,
-                price: tab[n].price
+        if(tab[id-1].availableSeats>0){
+            let config={
+                idtickets: 1
+            };
+            let a;
+            let ticket;
+
+            let isDisponible=false;
+            if(tickets.length==0) a=1;
+            else{
+                for(let i=1;i<=tab[id-1].availableSeats;i++){
+                if(tickets.length==0)return a=1;
+                for(let j=0;j<tickets.length;i++){
+                    if(i!=tickets[j].seatNumber){
+                        isDisponible=true; 
+                        break;  
+                    }
+                   
+                     
+                }
+                if(isDisponible){
+                    a=i;
+                    break;
+                }
+            }
             }
             
-            tab[n].availableSeats-=1;
+
+            ticket={
+                id :config.idtickets++,
+                passengerName :name ,
+                tripId : tab[id-1].id,
+                seatNumber: a,
+                price: tab[id-1].price
+            };
+            
             tickets.push(ticket)
-            console.log("Ticket acheté avec succès.\n \nTicket #",ticket.id,"\n Passager : ",ticket.passengerName,"\nTrajet : ",tab[n].departure+"->"+tab[n].destination,"\n Place : ",ticket.seatNumber,"\n Prix : ",ticket.price)
+
+            tab[id-1].availableSeats=tab[id-1].availableSeats-1;
+            
+            
+            console.log("Ticket acheté avec succès.\n \nTicket #",ticket.id,"\n Passager : ",ticket.passengerName,"\nTrajet : ",tab[id-1].departure+"->"+tab[id-1].destination,"\n Place : ",ticket.seatNumber,"\n Prix : ",ticket.price)
 
         }else{
             console.log("Train complet.")
@@ -50,6 +79,33 @@ function Acheter(tab){
         console.log("Trajet introuvable.")
     }
 }
+
+
+
+
+
+//afficher tout les tickets enregestrer
+
+function affichertickets(tickets,tab){
+    if(tickets.length!=0){
+        for(i=0;i<tickets.length;i++){
+            console.log("=== TICKETS ===")
+            console.log("Ticket #",tickets[i].id)
+            console.log("Passager :",tickets[i].passengerName)
+            console.log("Trajet : ",tab[tickets[i].tripId-1].departure,"-->",tab[tickets[i].tripId-1].destination)
+            console.log("Place : ",tickets[i].seatNumber)
+            console.log("Prix : ",tickets[i].price," DH")
+
+        }
+    }
+    else{
+        console.log("Aucun ticket enregistré.")
+    }
+}
+
+
+
+//anuller le ticket
 
 
 
