@@ -184,6 +184,9 @@ const trips = [
 ];
 
 const tickets = [];
+let config={
+    idtickets: 1
+};
 
 //menu
 
@@ -194,6 +197,7 @@ do{
         "       RAILWAY MANAGER \n"+
         "=================================\n\n"+
 
+        "0. Quitter \n"+
         "1. Afficher les trajets\n"+
         "2. Acheter un ticket\n"+
         "3. Afficher les tickets\n"+
@@ -201,11 +205,20 @@ do{
         "5. Rechercher un ticket\n"+
         "6. Filtrer les trajets\n"+
         "7. Trier les trajets\n"+
-        "0. Quitter ")
-
+        "8. Afficher Nombre total de tickets vendus\n"+
+        "9. Afficher Chiffre d'affaires total\n"+
+        "10. Afficher le Trajet le plus vendu"
+        )
+ 
     choix=+prompt("votre choix :")
+    
+    if(isNaN(choix)){
+        console.log("entrer un nombre entre 1 et 10")
+        continue;
+    }
+    
     switch(choix){
-        case 0:
+        case 0 :
             console.log("exit ....")
             break;
         case 1 :
@@ -218,7 +231,7 @@ do{
             affichertickets(tickets,trips)
             break;
         case 4 :
-            annulerTicket(tickets)
+            annulerTicket(tickets,trips)
             break;
         case 5 :
             recherchPassager(tickets,trips)
@@ -228,6 +241,15 @@ do{
             break;
         case 7 :
             trier(trips)
+            break;
+        case 8 :
+            nbreTotal(tickets)
+            break;
+        case 9 :
+            chaiffresTotal(tickets)
+            break;
+        case 10 :
+            plusVendu(tickets,trips)
             break;
         
         default :
@@ -255,55 +277,54 @@ function afficher(tab){
 
 //acheter
 function Acheter(tab,tickets){
+    let ticket;
+    let a;
+    
     let name=prompt("entrer ton nom :");
     let id=+prompt("entrer l identifiant de trajet :");
     let n=0;
     for(i=0;i<tab.length;i++){
-        if(tab[i].id==id)n=i;
+        if(tab[i].id==id)n=i+1;
         
     }
     if(n>0){
         if(tab[id-1].availableSeats>0){
-            let config={
-                idtickets: 1
-            };
-            let a;
-            let ticket;
-
-            let isDisponible=false;
+   
+            
             if(tickets.length==0) a=1;
             else{
-                for(let i=1;i<=tab[id-1].availableSeats;i++){
-                if(tickets.length==0)return a=1;
-                for(let j=0;j<tickets.length;i++){
-                    if(i!=tickets[j].seatNumber){
-                        isDisponible=true; 
-                        break;  
+                
+                for(let i=1;i<=50;i++){
+                    let isDisponible = true;
+                    for(let j=0;j<tickets.length;j++){
+                        if(tickets[j].tripId==id && i==tickets[j].seatNumber){
+                            
+                            isDisponible=false; 
+                            break;  
+                            
+                        }
+
                     }
-                   
-                     
+                    if(isDisponible){
+                        a=i;
+                        break;
+                    }
                 }
-                if(isDisponible){
-                    a=i;
-                    break;
-                }
-            }
             }
             
 
             ticket={
-                id :config.idtickets++,
+                id :config.idtickets ++,
                 passengerName :name ,
                 tripId : tab[id-1].id,
                 seatNumber: a,
                 price: tab[id-1].price
             };
-            
+
             tickets.push(ticket)
 
             tab[id-1].availableSeats=tab[id-1].availableSeats-1;
-            
-            
+ 
             console.log("Ticket acheté avec succès.\n \n Ticket #",ticket.id,"\n Passager : ",ticket.passengerName,"\n Trajet : ",tab[id-1].departure+"->"+tab[id-1].destination,"\n Place : ",ticket.seatNumber,"\n Prix : ",ticket.price)
 
         }else{
@@ -342,7 +363,7 @@ function affichertickets(tickets,tab){
 
 //anuller le ticket
 
-function annulerTicket(tickets){
+function annulerTicket(tickets,tab){
     let a=0;
     let id =+prompt("entrer Identifiant du ticket");
     let exist=false;
@@ -358,13 +379,13 @@ function annulerTicket(tickets){
     if(exist){
         tickets.splice(a,1)
         console.log("Ticket annulé avec succès.")
+        tab[tickets[id-1].tripId-1].availableSeats=tab[tickets[id-1].tripId-1].availableSeats+1;
         
     }
     else{
         console.log("Ticket introuvable.")
     }
-    
-    
+ 
 }
 
 
@@ -477,6 +498,4 @@ function plusVendu(tickets,tab){
     console.log('tickets vendus',trajetId[max].somme)
 
 }
-
-
 
